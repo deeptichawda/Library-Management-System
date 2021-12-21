@@ -34,7 +34,7 @@ CREATE TABLE `library_management`.`Member` (
   `Status` TINYINT NOT NULL,
   `JoiningDate` DATE NOT NULL,
   `ExpiryDate` DATE NOT NULL,
-  `NoOfBookIssued` INT ZEROFILL NOT NULL,
+  `NoOfBookIssued` INT NOT NULL,
   PRIMARY KEY (`MemberID`),
   UNIQUE INDEX `UserName_UNIQUE` (`UserName` ASC) VISIBLE);
 
@@ -45,7 +45,7 @@ CREATE TABLE `library_management`.`Book` (
   `Subject` VARCHAR(30) NOT NULL,
   `PublicationDate` DATE NOT NULL,
   `PublicationHouse` VARCHAR(50) NOT NULL,
-  `NoOfCopies` INT ZEROFILL NOT NULL,
+  `NoOfCopies` INT NOT NULL,
   `RackNumber` INT NOT NULL,
   PRIMARY KEY (`BookID`));
 
@@ -68,9 +68,11 @@ CREATE TABLE `library_management`.`BookIssue` (
   `MemberID` INT NOT NULL,
   `IssueDate` DATETIME NOT NULL,
   `ReturnDate` DATETIME NULL,
+  `ReturnedBy` INT NOT NULL,
   PRIMARY KEY (`IssueID`),
   INDEX `MemberIDFK_idx` (`MemberID` ASC) VISIBLE,
   INDEX `BookItemIDFK_idx` (`BookItemID` ASC) VISIBLE,
+  INDEX `ReturnedByFK_idx` (`ReturnedBy` ASC) VISIBLE,
   CONSTRAINT `BookItemIDFK`
     FOREIGN KEY (`BookItemID`)
     REFERENCES `library_management`.`BookItem` (`BookItemID`)
@@ -79,6 +81,11 @@ CREATE TABLE `library_management`.`BookIssue` (
   CONSTRAINT `MemberIDFK`
     FOREIGN KEY (`MemberID`)
     REFERENCES `library_management`.`Member` (`MemberID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `ReturnedByFK`
+    FOREIGN KEY (`ReturnedBy`)
+    REFERENCES `library_management`.`Librarian` (`LibrarianID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
@@ -105,7 +112,7 @@ CREATE TABLE `library_management`.`Fine` (
   `FineID` INT NOT NULL AUTO_INCREMENT,
   `BookItemID` INT NOT NULL,
   `MemberID` INT NOT NULL,
-  `Amount` INT ZEROFILL NOT NULL,
+  `Amount` INT NOT NULL,
   `PaymentMethod` VARCHAR(15) NOT NULL,
   PRIMARY KEY (`FineID`),
   INDEX `BookItemIDFK2_idx` (`BookItemID` ASC) VISIBLE,
