@@ -35,8 +35,15 @@ CREATE TABLE `library_management`.`Member` (
   `JoiningDate` DATE NOT NULL,
   `ExpiryDate` DATE NOT NULL,
   `NoOfBookIssued` INT NOT NULL,
+  `RegisteredBy` INT NOT NULL,
   PRIMARY KEY (`MemberID`),
-  UNIQUE INDEX `UserName_UNIQUE` (`UserName` ASC) VISIBLE);
+  UNIQUE INDEX `UserName_UNIQUE` (`UserName` ASC) VISIBLE,
+  INDEX `RegisteredByFK_idx` (`RegisteredBy` ASC) VISIBLE,
+  CONSTRAINT `RegisteredByFK`
+  FOREIGN KEY (`RegisteredBy`)
+  REFERENCES `library_management`.`Librarian` (`LibrarianID`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE);
 
 CREATE TABLE `library_management`.`Book` (
   `BookID` INT NOT NULL AUTO_INCREMENT,
